@@ -5,9 +5,6 @@ import (
 	"strings"
 )
 
-var res bool
-var d int
-
 //Using map I can put a value on "(" = 1 and ")" = -1 and zero value on everything else
 
 var m = map[string]int{
@@ -16,36 +13,35 @@ var m = map[string]int{
 }
 
 func main() {
-	b := "(()()())()"
+	d := 0
+	res := false
+	var b string
+	fmt.Scanln(&b)
 
 	a := strings.Split(b, "")
 
 	d = checkCorrOfParens(a)
 
-	fmt.Printf("This is main %d\n", d)
-
-	checkIfTrue(d)
+	res = checkIfTrue(d)
 
 	fmt.Println(res)
 }
 
 func checkCorrOfParens(s []string) int {
+	d := 0
 	for i := 0; i < len(s); i++ {
-		fmt.Printf("This is 1st %d\n", d)
 		d = d + m[s[i]]
-		fmt.Printf("This is 2nd %d\n", d)
-		if i == 0 && d != 1 {
-			break
-		} else if i == (len(s)-1) && m[s[i]] == 1 {
-			d = 10
+		if d < 0 {
+			return d
 		}
 	}
-	fmt.Printf("This is at the end %d\n", d)
+
 	return d
 }
 
 func checkIfTrue(i int) bool {
-	if d == 0 {
+	res := true
+	if i == 0 {
 		res = true
 	} else {
 		res = false
