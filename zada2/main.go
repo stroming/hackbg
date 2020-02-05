@@ -1,97 +1,132 @@
 package main
 
-import "fmt"
-
-const (
-	//input za
-	x int = 5
-	y int = 5
-	//n na broi
-	//y = kolona x = red
-	x1 int = 3
-	y1 int = 3
-
-	// x2 int = 3
-	// y2 int = 5
-
-	// x3 int = 9
-	// y3 int = 1
+import (
+	"fmt"
 )
 
-type matrix [x][y]string
+var x int
+var y int
+var rot int = 3
+var x1 int
+var y1 int
+var x2 int
+var y2 int
 
-var a matrix
+type location struct {
+	i int
+	j int
+}
 
 func main() {
-	// timeGone := 2
+	// These are the vars that specify how big the Crate is
+	fmt.Println("How many apples can the crate store? Please use 'NxN' format for input.:")
+	_, err := fmt.Scanf("%dx%d\n", &x, &y)
 
-	//tova e za kasetkata
-	for i := 0; i < len(a); i++ {
-		for j := 0; j < len(a[i]); j++ {
-			a[i][j] = "G"
-		}
-	}
-	//tova sa gnilite qbulki koordinati
-	a[y1][x1] = "x"
+	// These are the locations of the rotten apples
+	fmt.Println("Where's the first rotten apple? Please use '(N,N)'format for input.:")
+	_, err1 := fmt.Scanf("(%d,%d)\n", &x1, &y1)
+	fmt.Println("Where is the second rotten apple?(If none leave blanc) Please use '(N,N)'format for input,or skip if there's only 1 rotten apple.:")
+	_, err2 := fmt.Scanf("(%d,%d)", &x2, &y2)
 
-	// a[y2][x2] = "x"
-	// a[y3][x3] = "x"
-	//Tuka susednite na a[y1][x2] se prevrushtata v x=sove i nagore i na dolo
-	// if timeGone > 3 {
-	if y1 > 1 {
-		for i := y1 - 1; i < len(a[y1-1:y1+2]); i++ {
-			if x1 > 1 {
-				for j := x1 - 1; j < len(a[x1-1:x1+2]); j++ {
-					a[i-1 : i+2][j-2 : j+2] = "x"
+	// How long was I gone
+	var timeGone int
+	fmt.Println("How many days will you be gone?:")
+	_, err3 := fmt.Scanln(&timeGone)
+	fmt.Println(err, err1, err2, err3)
+
+	// Creating the matrix that would represent the crate
+
+	a := createMatrix(y, x)
+
+	// Creating crate with the apples in it marked with a 0
+
+	createCrate(a)
+	a[x1][y1] = "x"
+	a[x2][y2] = "x"
+
+	print(a)
+
+	rotPeriod := timeGone / rot
+
+	rottenApples := []location{}
+	// First range over the matrix for the time equal to the rotPeriod
+	for p := 0; p < rotPeriod; p++ {
+		// Range the actual matrix
+		for i := 0; i < len(a); i++ {
+
+			for j := 0; j < len(a[i]); j++ {
+
+				if a[i][j] == "x" {
+					// Found the rotten apple
+					rottenApples = append(rottenApples, location{i, j})
+
 				}
-			} else if x1 == 1 {
 
-				for j := x1; j < len(a[x1:x1+2]); j++ {
-					a[i][j] = "x"
+			}
+		}
+
+		for _, apples := range rottenApples {
+
+			ii := apples.i
+			jj := apples.j
+			if ii-1 >= 0 {
+				if jj-1 >= 0 {
+					a[ii-1][jj-1] = "x"
+				}
+
+				a[ii-1][jj] = "x"
+
+				if jj+1 < len(a) {
+					a[ii-1][jj+1] = "x"
+				}
+
+			}
+
+			if jj-1 >= 0 {
+				a[ii][jj-1] = "x"
+			}
+
+			if jj+1 < len(a) {
+				a[ii][jj+1] = "x"
+			}
+
+			if ii+1 < len(a[0]) {
+				if jj-1 >= 0 {
+					a[ii+1][jj-1] = "x"
+				}
+				a[ii+1][jj] = "x"
+				if jj+1 < len(a) {
+					a[ii+1][jj+1] = "x"
 				}
 			}
 
 		}
 
-	} else if y1 == 1 {
-		for i := y1; i < len(a[y1:y1+2]); i++ {
-			if x1 > 1 {
-				for j := x1 - 1; j < len(a[x1-1:x1+2]); j++ {
-					a[i][j] = "x"
-				}
-			} else if x1 == 1 {
+		rottenApples = []location{}
+	}
+	print(a)
 
-				for j := x1; j < len(a[x1:x1+2]); j++ {
-					a[i][j] = "x"
-				}
-			}
+}
+
+func print(m [][]string) {
+	fmt.Println()
+	for i := 0; i < len(m); i++ {
+		fmt.Printf("%v\n", m[i])
+	}
+}
+
+func createCrate(xi [][]string) {
+	for i := 0; i < len(xi); i++ {
+		for j := 0; j < len(xi[i]); j++ {
+			xi[i][j] = "O"
 		}
-
 	}
+}
 
-	// } else if timeGone > 6 {
-	// 	for i := y1 - 1; i < len(a[y1-3:y1+4]); i++ {
-	// 		for j := x1 - 1; j < len(a[x1-3:x1+4]); j++ {
-	// 			a[i][j] = "x"
-
-	// 		}
-	// 	}
-
-	// }
-
-	// for i := 0; i < len(a); i++ {
-	// 	for j := 0; j < len(a[i]); j++ {
-	// 		if a[i][j] == "x" {
-	// 			fmt.Println("yes bro fck yes")
-	// 			a[i-1][j-1] = "x"
-
-	// 		}
-	// 	}
-	// }
-
-	//TOVA E DA VIDISH KAK 	izgLEJDA KATO MATRICA FNIMAAI BRATO !!!!!!
-	for i := 0; i < len(a); i++ {
-		fmt.Printf("%v\n", a[i])
+func createMatrix(y int, x int) [][]string {
+	a := make([][]string, y)
+	for i := range a {
+		a[i] = make([]string, x)
 	}
-
+	return a
 }
