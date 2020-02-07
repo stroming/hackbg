@@ -11,17 +11,17 @@ type Point struct {
 	lvl float64
 }
 
+var radius float64
+var appropriateError float64
+var xi []Point
+var p Point
+
 func main() {
-	var xi []Point
-	// var ii []Point
-	var radius float64
-	var appropriateError float64
+	// r, err := fmt.Scanln("Radius = %v")
+	// fmt.Println(err)
+	radius = 0 //float64(r)
 
-	radius = 1
-
-	appropriateError = 50
-
-	var p Point
+	appropriateError = 200
 
 	points := make(map[string]Point)
 
@@ -45,6 +45,30 @@ func main() {
 
 	}
 
+	brokenSensors(points)
+
+	xi = brokenSensors(points)
+	xi = unique(xi)
+
+	fmt.Println("You should check out these Sensors :", xi)
+
+}
+
+func (p Point) Key() string {
+	return fmt.Sprintf("%d,%d", p.x, p.y)
+}
+func unique(intSlice []Point) []Point {
+	keys := make(map[Point]bool)
+	list := []Point{}
+	for _, entry := range intSlice {
+		if _, value := keys[entry]; !value {
+			keys[entry] = true
+			list = append(list, entry)
+		}
+	}
+	return list
+}
+func brokenSensors(points map[string]Point) []Point {
 	for _, v := range points {
 		a := v.x
 		b := v.y
@@ -65,10 +89,5 @@ func main() {
 		}
 	}
 
-	fmt.Println(xi)
-
-}
-
-func (p Point) Key() string {
-	return fmt.Sprintf("%d,%d", p.x, p.y)
+	return xi
 }
