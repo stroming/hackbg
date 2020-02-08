@@ -1,8 +1,14 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"io/ioutil"
+	"log"
 	"math"
+	"os"
+	"strconv"
+	"strings"
 )
 
 type Point struct {
@@ -15,25 +21,36 @@ var radius float64
 var appropriateError float64
 var xi []Point
 var p Point
+var r int
+var data []float64
 
 func main() {
-	// r, err := fmt.Scanln("Radius = %v")
-	// fmt.Println(err)
-	radius = 0 //float64(r)
+	fmt.Println("Please input Radius:")
 
-	appropriateError = 200
+	_, err := fmt.Scanln(&r)
+
+	radius = float64(r)
+
+	checkForErrors(err)
+
+	fmt.Println("Please input max Error vaue:")
+	_, err1 := fmt.Scanln(&appropriateError)
+
+	checkForErrors(err1)
 
 	points := make(map[string]Point)
+	x := readFromFile()
+	data = 
 
-	data := [][]float64{
-		{1, 2, 100},
-		{1, 1, 100},
-		{5, 5, 20},
-		{4, 4, 80},
-		{3, 3, 10},
-		{3, 5, 0},
-		{3, 6, 200},
-	}
+	// data = [][]float64{
+	// 	{1, 2, 100},
+	// 	{1, 1, 100},
+	// 	{5, 5, 20},
+	// 	{4, 4, 80},
+	// 	{3, 3, 10},
+	// 	{3, 5, 0},
+	// 	{3, 6, 200},
+	// }
 
 	for _, v := range data {
 		p = Point{
@@ -90,4 +107,48 @@ func brokenSensors(points map[string]Point) []Point {
 	}
 
 	return xi
+}
+func checkForErrors(e error) {
+	if e != nil {
+		fmt.Println(e)
+	}
+}
+
+func DataFromFile() []float64 {
+	var x []float64
+	a := readFromFile()
+	for _, v := range a {
+		b := strings.Split(v, ",")
+		for _, g := range b {
+			d, err := strconv.ParseFloat(g, 64)
+			if err != nil {
+				fmt.Printf("Error : %v\n", err)
+			}
+			x = append(x, d)
+
+		}
+
+	}
+	return x
+}
+func readFromFile() []string {
+	var a string
+	var b []string
+	file, err := os.Open("myfile.txt")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		a = scanner.Text()
+		b = append(b, a)
+
+	}
+
+	if err := scanner.Err(); err != nil {
+		log.Fatal(err)
+	}
+	return b
 }
