@@ -3,7 +3,6 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"math"
 	"os"
@@ -23,6 +22,7 @@ var xi []Point
 var p Point
 var r int
 var data []float64
+var points map[string]Point
 
 func main() {
 	fmt.Println("Please input Radius:")
@@ -38,29 +38,8 @@ func main() {
 
 	checkForErrors(err1)
 
-	points := make(map[string]Point)
-	x := readFromFile()
-	data = 
-
-	// data = [][]float64{
-	// 	{1, 2, 100},
-	// 	{1, 1, 100},
-	// 	{5, 5, 20},
-	// 	{4, 4, 80},
-	// 	{3, 3, 10},
-	// 	{3, 5, 0},
-	// 	{3, 6, 200},
-	// }
-
-	for _, v := range data {
-		p = Point{
-			x:   v[0],
-			y:   v[1],
-			lvl: v[2],
-		}
-		points[p.Key()] = p
-
-	}
+	points = readFromFile()
+	fmt.Println(points)
 
 	brokenSensors(points)
 
@@ -85,12 +64,12 @@ func unique(intSlice []Point) []Point {
 	}
 	return list
 }
-func brokenSensors(points map[string]Point) []Point {
-	for _, v := range points {
+func brokenSensors(p map[string]Point) []Point {
+	for _, v := range p {
 		a := v.x
 		b := v.y
 		d := v.lvl
-		for _, c := range points {
+		for _, c := range p {
 			i := c.x
 			j := c.y
 			f := c.lvl
@@ -114,41 +93,41 @@ func checkForErrors(e error) {
 	}
 }
 
-func DataFromFile() []float64 {
-	var x []float64
-	a := readFromFile()
-	for _, v := range a {
-		b := strings.Split(v, ",")
-		for _, g := range b {
-			d, err := strconv.ParseFloat(g, 64)
-			if err != nil {
-				fmt.Printf("Error : %v\n", err)
-			}
-			x = append(x, d)
+func PointFromFile(s string) Point {
 
-		}
+	b := strings.Split(s, ",")
 
+	d, err := strconv.ParseFloat(b[0], 64)
+	e, err1 := strconv.ParseFloat(b[1], 64)
+	r, err2 := strconv.ParseFloat(b[2], 64)
+	x := Point{
+		x:   d,
+		y:   e,
+		lvl: r,
 	}
+	checkForErrors(err)
+	checkForErrors(err1)
+	checkForErrors(err2)
+
 	return x
 }
-func readFromFile() []string {
+func readFromFile() map[string]Point {
 	var a string
-	var b []string
+
 	file, err := os.Open("myfile.txt")
-	if err != nil {
-		log.Fatal(err)
-	}
+	checkForErrors(err)
 	defer file.Close()
 
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		a = scanner.Text()
-		b = append(b, a)
+		p := PointFromFile(a)
+		points[p.Key()] = p
 
 	}
 
 	if err := scanner.Err(); err != nil {
 		log.Fatal(err)
 	}
-	return b
+	return points
 }
