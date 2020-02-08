@@ -16,19 +16,14 @@ type Point struct {
 	lvl float64
 }
 
-var radius float64
-var appropriateError float64
-var xi []Point
-var p Point
-var r int
-var data []float64
-
 func main() {
+	var appropriateError float64
+	var r int
 	fmt.Println("Please input Radius:")
 
 	_, err := fmt.Scanln(&r)
 
-	radius = float64(r)
+	radius := float64(r)
 
 	checkForErrors(err)
 
@@ -39,9 +34,7 @@ func main() {
 	points := make(map[string]Point)
 	points = readFromFile(points)
 
-	brokenSensors(points)
-
-	xi = brokenSensors(points)
+	xi := brokenSensors(points, radius, appropriateError)
 	xi = unique(xi)
 
 	fmt.Println("You should check out these Sensors :", xi)
@@ -62,7 +55,8 @@ func unique(intSlice []Point) []Point {
 	}
 	return list
 }
-func brokenSensors(p map[string]Point) []Point {
+func brokenSensors(p map[string]Point, r float64, maxError float64) []Point {
+	var xi []Point
 	for _, v := range p {
 		a := v.x
 		b := v.y
@@ -71,9 +65,9 @@ func brokenSensors(p map[string]Point) []Point {
 			i := c.x
 			j := c.y
 			f := c.lvl
-			if math.Abs(a-i) <= radius || a+radius <= i {
-				if math.Abs(b-j) <= radius || (b+radius) >= j {
-					if math.Abs(d-f) >= appropriateError {
+			if math.Abs(a-i) <= r || a+r <= i {
+				if math.Abs(b-j) <= r || (b+r) >= j {
+					if math.Abs(d-f) >= maxError {
 						xi = append(xi, c)
 						// fmt.Println("Y", c)
 
