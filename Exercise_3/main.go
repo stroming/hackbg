@@ -22,7 +22,6 @@ var xi []Point
 var p Point
 var r int
 var data []float64
-var points map[string]Point
 
 func main() {
 	fmt.Println("Please input Radius:")
@@ -37,9 +36,8 @@ func main() {
 	_, err1 := fmt.Scanln(&appropriateError)
 
 	checkForErrors(err1)
-
-	points = readFromFile()
-	fmt.Println(points)
+	points := make(map[string]Point)
+	points = readFromFile(points)
 
 	brokenSensors(points)
 
@@ -111,7 +109,7 @@ func PointFromFile(s string) Point {
 
 	return x
 }
-func readFromFile() map[string]Point {
+func readFromFile(p map[string]Point) map[string]Point {
 	var a string
 
 	file, err := os.Open("myfile.txt")
@@ -121,13 +119,14 @@ func readFromFile() map[string]Point {
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		a = scanner.Text()
-		p := PointFromFile(a)
-		points[p.Key()] = p
+		b := PointFromFile(a)
+
+		p[b.Key()] = b
 
 	}
 
 	if err := scanner.Err(); err != nil {
 		log.Fatal(err)
 	}
-	return points
+	return p
 }
