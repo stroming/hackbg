@@ -19,6 +19,7 @@ type Point struct {
 func main() {
 	var appropriateError float64
 	var r int
+	var nameOfFile string
 	fmt.Println("Please input Radius:")
 
 	_, err := fmt.Scanln(&r)
@@ -31,8 +32,14 @@ func main() {
 	_, err1 := fmt.Scanln(&appropriateError)
 
 	checkForErrors(err1)
+
+	fmt.Println("Please input file path here:")
+	_, err2 := fmt.Scanln(&nameOfFile)
+
+	checkForErrors(err2)
+
 	points := make(map[string]Point)
-	points = readFromFile(points)
+	points = readFromFile(points, nameOfFile)
 
 	xi := brokenSensors(points, radius, appropriateError)
 	xi = unique(xi)
@@ -81,7 +88,7 @@ func brokenSensors(p map[string]Point, r float64, maxError float64) []Point {
 }
 func checkForErrors(e error) {
 	if e != nil {
-		fmt.Println(e)
+		log.Fatal(e)
 	}
 }
 
@@ -103,10 +110,10 @@ func PointFromFile(s string) Point {
 
 	return x
 }
-func readFromFile(p map[string]Point) map[string]Point {
+func readFromFile(p map[string]Point, s string) map[string]Point {
 	var a string
 
-	file, err := os.Open("myfile.txt")
+	file, err := os.Open(s)
 	checkForErrors(err)
 	defer file.Close()
 
@@ -118,9 +125,7 @@ func readFromFile(p map[string]Point) map[string]Point {
 		p[b.Key()] = b
 
 	}
+	checkForErrors(scanner.Err())
 
-	if err := scanner.Err(); err != nil {
-		log.Fatal(err)
-	}
 	return p
 }
