@@ -26,7 +26,7 @@ func main() {
 	fmt.Println("Where's the first rotten apple? Please use '(N,N)'format for input.:")
 	_, err1 := fmt.Scanf("(%d,%d)\n", &x1, &y1)
 	fmt.Println("Where is the second rotten apple?(If none leave blanc) Please use '(N,N)'format for input,or skip if there's only 1 rotten apple.:")
-	_, err2 := fmt.Scanf("(%d,%d)", &x2, &y2)
+	_, err2 := fmt.Scanf("(%d,%d)\n", &x2, &y2)
 
 	// How long was I gone
 	var timeGone int
@@ -36,11 +36,12 @@ func main() {
 
 	// Creating the matrix that would represent the crate
 
-	a := createMatrix(y, x)
+	a := createMatrix(x, y)
 
 	// Creating crate with the apples in it marked with a 0
 
 	createCrate(a)
+
 	a[x1][y1] = "x"
 	a[x2][y2] = "x"
 
